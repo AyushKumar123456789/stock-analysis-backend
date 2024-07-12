@@ -91,10 +91,6 @@ backend/
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
-### License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ---
 
 By following these instructions, you should be able to set up and run both the backend and frontend for the Stock Analysis Service. Feel free to contribute to the project to make it better!

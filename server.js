@@ -10,8 +10,10 @@ connectDB();
 // app.use(cors());
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,
+        origin: process.env.CLIENT_URL, //it allows the server to accept the request from the client
         credentials: true, //cridentials means that the server will accept the cookies from the client
+        methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
+        allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
     })
 );
 

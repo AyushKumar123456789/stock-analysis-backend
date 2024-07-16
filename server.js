@@ -33,6 +33,7 @@ app.use(cookieParser());
 
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/stocks', require('./routes/stockRoutes'));
+app.use('/api/health', require('./routes/healthCheckRoutes'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

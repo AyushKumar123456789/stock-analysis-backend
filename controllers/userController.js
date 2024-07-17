@@ -13,18 +13,18 @@ exports.registerByMail = async (req, res) => {
             });
         }
 
-        const decoded = jwt.verify(jwt_token, 'your_jwt_secret');
-        const { username, email, password, role } = decoded;
+        const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET);
+        const { username, email, password } = decoded;
 
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
                 error: 'User already exists',
-                message: 'User not created',
+                message: 'User not created, because user already exists',
             });
         }
 
-        const user = new User({ username, password, email, role });
+        const user = new User({ username, password, email });
         await user.save();
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -41,7 +41,7 @@ exports.registerByMail = async (req, res) => {
             maxAge: 3600000, // 1 hour
         });
 
-        res.redirect(201, 'http://127.0.0.1:3000/api/login');
+        res.redirect(201, `${process.env.CLIENT_URL}/login`);
     } catch (err) {
         res.status(400).json({
             error: err.message,
@@ -53,8 +53,8 @@ exports.registerByMail = async (req, res) => {
 // Register user by sending a verification email
 exports.register = async (req, res) => {
     try {
-        const { username, password, email, role } = req.body;
-        if (!username || !password || !email || !role) {
+        const { username, password, email } = req.body;
+        if (!username || !password || !email) {
             return res.status(400).json({
                 error: 'Please fill all the fields',
                 message: 'User not created',
@@ -65,13 +65,13 @@ exports.register = async (req, res) => {
         if (userExists) {
             return res.status(400).json({
                 error: 'User already exists',
-                message: 'User not created',
+                message: 'Alredy Registered email',
             });
         }
 
         const jwt_Token = jwt.sign(
-            { username, email, password, role },
-            'your_jwt_secret',
+            { username, email, password },
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 

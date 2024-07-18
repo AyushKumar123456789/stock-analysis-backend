@@ -27,6 +27,12 @@ Without this middleware, if a client sends JSON data in a request, your Express 
 This line makes sure your app can handle and work with JSON data sent by clients.
 */
 
+// print all requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`);
+    next();
+});
+
 app.use(express.urlencoded({ extended: true })); //it is used to parse the incoming requests with urlencoded payloads.for example, when you submit a form, the data is sent to the server in the form of a URL-encoded string.
 app.use(express.static('public')); //it is used to serve static files such as images, CSS files, and JavaScript files.
 app.use(cookieParser());

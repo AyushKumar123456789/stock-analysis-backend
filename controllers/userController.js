@@ -17,18 +17,18 @@ exports.registerByMail = async (req, res) => {
             });
         }
 
-        const decoded = jwt.verify(jwt_token, 'your_jwt_secret');
-        const { username, email, password, role } = decoded;
+        const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET);
+        const { username, email, password } = decoded;
 
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
                 error: 'User already exists',
-                message: 'User not created',
+                message: 'User not created, because user already exists',
             });
         }
 
-        const user = new User({ username, password, email, role });
+        const user = new User({ username, password, email });
         await user.save();
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -69,7 +69,7 @@ exports.register = async (req, res) => {
         if (userExists) {
             return res.status(400).json({
                 error: 'User already exists',
-                message: 'User not created',
+                message: 'Alredy Registered email',
             });
         }
 

@@ -1,3 +1,8 @@
+/*
+    This is a live branch of the project. 
+    For deployment purposes,
+*/
+
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');

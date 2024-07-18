@@ -2,15 +2,17 @@ const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { SendMail } = require('../util/nodemailer/EmailValidation');
+const {
+    UserAlreadyExistsError,
+    InvalidCredentialsError,
+    RequiredTokenError,
+} = require('../error');
 
-exports.registerByMail = async (req, res) => {
+exports.registerByMail = async (req, res, next) => {
     try {
         const jwt_token = req.query.token;
         if (!jwt_token) {
-            return res.status(400).json({
-                error: 'Token not found',
-                message: 'User not created',
-            });
+            throw new RequiredTokenError();
         }
 
         const decoded = jwt.verify(jwt_token, process.env.JWT_SECRET);
@@ -18,10 +20,7 @@ exports.registerByMail = async (req, res) => {
 
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json({
-                error: 'User already exists',
-                message: 'User not created, because user already exists',
-            });
+            throw new UserAlreadyExistsError();
         }
 
         const user = new User({ username, password, email });
@@ -43,30 +42,18 @@ exports.registerByMail = async (req, res) => {
 
         res.redirect(201, `${process.env.CLIENT_URL}/login`);
     } catch (err) {
-        res.status(400).json({
-            error: err.message,
-            message: 'User not created',
-        });
+        next(err);
     }
 };
 
 // Register user by sending a verification email
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
     try {
         const { username, password, email } = req.body;
-        if (!username || !password || !email) {
-            return res.status(400).json({
-                error: 'Please fill all the fields',
-                message: 'User not created',
-            });
-        }
 
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return res.status(400).json({
-                error: 'User already exists',
-                message: 'Alredy Registered email',
-            });
+            throw new UserAlreadyExistsError();
         }
 
         const jwt_Token = jwt.sign(
@@ -87,19 +74,16 @@ exports.register = async (req, res) => {
             message: 'Verification email sent successfully',
         });
     } catch (err) {
-        res.status(400).json({
-            error: err.message,
-            message: 'User not created',
-        });
+        next(err);
     }
 };
 
-exports.login = async (req, res) => {
-    const { email, password } = req.body;
+exports.login = async (req, res, next) => {
     try {
+        const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            throw new Error('Invalid credentials');
+            throw new InvalidCredentialsError();
         }
         const token = jwt.sign({ id: user._id }, 'your_jwt_secret', {
             expiresIn: '1h',
@@ -115,21 +99,21 @@ exports.login = async (req, res) => {
         });
         res.json({ message: 'User logged in successfully' });
     } catch (err) {
-        res.status(400).json({ error: err.message });
+        next(err);
     }
 };
 
-exports.logout = async (req, res) => {
+exports.logout = async (req, res, next) => {
     try {
         res.clearCookie('token');
         res.clearCookie('role');
         res.json({ message: 'Logged out' });
     } catch (err) {
-        res.status(400).json({ error: err.message, message: 'Not logged out' });
+        next(err);
     }
 };
 
-exports.isLoggedIn = (req, res) => {
+exports.isLoggedIn = (req, res, next) => {
     try {
         const token = req.cookies.token;
         if (!token) {
@@ -138,6 +122,6 @@ exports.isLoggedIn = (req, res) => {
         jwt.verify(token, 'your_jwt_secret');
         res.json(true);
     } catch (err) {
-        res.json(false);
+        next(err);
     }
 };

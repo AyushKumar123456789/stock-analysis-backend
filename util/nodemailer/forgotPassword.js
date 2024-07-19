@@ -1,6 +1,7 @@
 const nodeMailer = require('nodemailer');
+const { resetPassword } = require('../../controllers/userController');
 const passwordResetRedirect =
-    process.env.FRONTEND_RESET_ADDRESS ||
+    `${process.env.CLIENT_URL}/reset-password` ||
     'http://localhost:5173/reset-password';
 
 module.exports.SendForgotPasswordMail = async (obj) => {

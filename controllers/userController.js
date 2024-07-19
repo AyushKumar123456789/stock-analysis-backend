@@ -75,7 +75,7 @@ exports.register = async (req, res) => {
 
         const jwt_Token = jwt.sign(
             { username, email, password },
-            'your_jwt_secret',
+            process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -105,7 +105,7 @@ exports.login = async (req, res) => {
         if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new Error('Invalid credentials');
         }
-        const token = jwt.sign({ id: user._id }, 'your_jwt_secret', {
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h',
         });
         res.cookie('token', token, {
@@ -139,7 +139,7 @@ exports.isLoggedIn = (req, res) => {
         if (!token) {
             return res.json(false);
         }
-        jwt.verify(token, 'your_jwt_secret');
+        jwt.verify(token, process.env.JWT_SECRET);
         res.json(true);
     } catch (err) {
         res.json(false);
@@ -153,7 +153,7 @@ exports.forgotPassword = async (req, res) => {
         if (!user) {
             throw new Error('User not found');
         }
-        const jwt_Token = jwt.sign({ id: user._id }, 'your_jwt_secret', {
+        const jwt_Token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '24h',
         });
         const mailOptions = {
@@ -176,7 +176,7 @@ exports.resetPassword = async (req, res) => {
         if (!jwt_Token) {
             throw new Error('Token not found');
         }
-        const decoded = jwt.verify(jwt_Token, 'your_jwt_secret');
+        const decoded = jwt.verify(jwt_Token, process.env.JWT_SECRET);
         const { id } = decoded;
         const user = await User.findById(id);
         if (!user) {

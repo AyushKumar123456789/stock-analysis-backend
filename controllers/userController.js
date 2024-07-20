@@ -55,7 +55,7 @@ exports.registerByMail = async (req, res, next) => {
 };
 
 // Register user by sending a verification email
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
     try {
         const { username, password, email } = req.body;
 

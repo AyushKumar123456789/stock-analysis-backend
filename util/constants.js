@@ -1,2 +1,11 @@
-DB_NAME = "Stock_Project_DB";
-exports.DB_NAME = DB_NAME;
+DB_NAME = 'Stock_Project_DB';
+USER_EDITOR_ROLE = 'editor';
+USER_DEFAULT_ROLE = 'user';
+USER_ROLES = [USER_DEFAULT_ROLE, USER_EDITOR_ROLE];
+
+module.exports = {
+    DB_NAME,
+    USER_ROLES,
+    USER_EDITOR_ROLE,
+    USER_DEFAULT_ROLE,
+};

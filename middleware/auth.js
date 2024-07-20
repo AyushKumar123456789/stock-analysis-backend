@@ -9,7 +9,7 @@ const auth = async (req, res, next) => {
             req.header('Authorization').replace('Bearer ', '');
         const requestMethod = req.method;
 
-        const tokenPayload = jwt.verify(token, 'your_jwt_secret');
+        const tokenPayload = jwt.verify(token, process.env.JWT_SECRET);
         const { id: userId } = tokenPayload;
 
         const user = await User.findOne({ _id: userId });

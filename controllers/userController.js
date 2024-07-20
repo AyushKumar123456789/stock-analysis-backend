@@ -11,7 +11,7 @@ const {
 } = require('../error');
 
 const emailVerificationRedirect =
-    process.env.FRONTEND_EMAIL_REDIRECT || 'http://localhost:5173/login';
+    process.env.CLIENT_URL || 'http://localhost:5173/login';
 
 exports.registerByMail = async (req, res, next) => {
     try {
@@ -90,14 +90,18 @@ exports.login = async (req, res, next) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
-        if (!user || !passwordCompareResult) {
+        if (!user) {
             throw new InvalidCredentialsError();
         }
+
         const passwordCompareResult = await bcrypt.compare(
             password,
             user.password
         );
 
+        if (!passwordCompareResult) {
+            throw new InvalidCredentialsError();
+        }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h',

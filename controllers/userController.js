@@ -90,14 +90,14 @@ exports.login = async (req, res, next) => {
         const { email, password } = req.body;
 
         const user = await User.findOne({ email });
+        if (!user || !passwordCompareResult) {
+            throw new InvalidCredentialsError();
+        }
         const passwordCompareResult = await bcrypt.compare(
             password,
             user.password
         );
 
-        if (!user || !passwordCompareResult) {
-            throw new InvalidCredentialsError();
-        }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h',

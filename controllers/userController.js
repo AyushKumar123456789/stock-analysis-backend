@@ -197,3 +197,14 @@ exports.resetPassword = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.me = async (req, res, next) => {
+    try {
+        const currentUserId = req.user._id;
+        const currentUser = await User.findById(currentUserId);
+
+        res.json(currentUser);
+    } catch {
+        next(err);
+    }
+};

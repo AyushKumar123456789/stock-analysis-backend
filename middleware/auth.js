@@ -4,9 +4,7 @@ const { AuthorizationError, UserNotFoundError } = require('../error');
 
 const auth = async (req, res, next) => {
     try {
-        const token =
-            req.cookies?.token ||
-            req.header('Authorization').replace('Bearer ', '');
+        const token = req.header('Authorization').replace('Bearer ', '');
         const requestMethod = req.method;
 
         const tokenPayload = jwt.verify(token, process.env.JWT_SECRET);

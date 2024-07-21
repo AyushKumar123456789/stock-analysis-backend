@@ -6,6 +6,9 @@ const {
     registerByMail,
     forgotPassword,
     resetPassword,
+    getUserFromToken,
+    signInWithEmail,
+    signInWithGmail,
 } = require('../controllers/userController');
 const validator = require('../middleware/validator.middleware');
 const registerSchema = require('../models/validation/register.validation.schema');
@@ -25,5 +28,8 @@ router.post('/reset-password', validator(resetPasswordSchema), resetPassword);
 router.post('/register', validator(registerSchema), register);
 router.post('/login', validator(loginSchema), login);
 router.post('/logout', logout);
+router.post('/get-user-from-token', getUserFromToken);
+router.post('/email-signin', signInWithEmail);
+router.post('/gmail-signin', signInWithGmail);
 
 module.exports = router;

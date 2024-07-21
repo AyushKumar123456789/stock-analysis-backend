@@ -89,7 +89,8 @@ exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email }).select('password');
+        const user = await User.findOne({ email }).select('+password +role');
+
         if (!user) {
             throw new InvalidCredentialsError();
         }
@@ -102,7 +103,7 @@ exports.login = async (req, res, next) => {
         if (!passwordCompareResult) {
             throw new InvalidCredentialsError();
         }
-
+        console.log(user);
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h',
         });

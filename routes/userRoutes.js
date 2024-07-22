@@ -13,6 +13,7 @@ const {
 } = require('../controllers/userController');
 const validator = require('../middleware/validator.middleware');
 const auth = require('../middleware/auth.middleware');
+const auth = require('../middleware/auth.middleware');
 const registerSchema = require('../models/validation/register.validation.schema');
 const loginSchema = require('../models/validation/login.validation.schema');
 const resetPasswordSchema = require('../models/validation/resetPassword.validation.schema');

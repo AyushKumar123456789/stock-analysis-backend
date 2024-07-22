@@ -51,6 +51,7 @@ exports.registerByMail = async (req, res, next) => {
 
 // Register user by sending a verification email
 exports.register = async (req, res, next) => {
+exports.register = async (req, res, next) => {
     try {
         const { username, password, email } = req.body;
 
@@ -86,6 +87,8 @@ exports.login = async (req, res, next) => {
 
         const user = await User.findOne({ email }).select('+password +role');
 
+        const user = await User.findOne({ email }).select('+password +role');
+
         if (!user) {
             throw new InvalidCredentialsError();
         }
@@ -98,6 +101,7 @@ exports.login = async (req, res, next) => {
         if (!passwordCompareResult) {
             throw new InvalidCredentialsError();
         }
+        console.log(user);
         console.log(user);
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h',
